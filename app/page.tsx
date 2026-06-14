@@ -50,8 +50,6 @@ export default function Home() {
                   alt={`Screenshot of ${project.name}`}
                   fill
                   className="object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500"
-                  // Fallback for missing images during dev
-                  onError={(e) => { e.currentTarget.style.display = 'none' }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center text-neutral-800 bg-neutral-950/50 -z-10">
                    [ Printscreen needed ]
