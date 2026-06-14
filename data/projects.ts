@@ -1,0 +1,83 @@
+export const projects = [
+  {
+    name: "Ouryie (VN Tracker)",
+    repo: "vn-tracker",
+    github: "https://github.com/EWilliamHertz/vn-tracker",
+    vercel: "https://ouryie.vercel.app",
+    description: "Manga reader proxy and visual novel tracker. 200 verified manga.",
+    image: "/images/projects/ouryie.jpg", // Add your printscreen here
+  },
+  {
+    name: "Hatake Social",
+    repo: "HatakeSocialEmergent",
+    github: "https://github.com/EWilliamHertz/HatakeSocialEmergent",
+    vercel: "https://www.hatake.eu",
+    description: "International TCG social media and marketplace platform.",
+    image: "/images/projects/hatake-social.jpg",
+  },
+  {
+    name: "Lagenio",
+    repo: "LAGENIO",
+    github: "https://github.com/EWilliamHertz/LAGENIO",
+    vercel: "https://lagenio.vercel.app",
+    description: "Android 14 to Android 16 compatibility builds.",
+    image: "/images/projects/lagenio.jpg",
+  },
+  {
+    name: "Manga Memoirs",
+    repo: "mangamemoirs",
+    github: "https://github.com/EWilliamHertz/mangamemoirs",
+    vercel: "https://mangamemoirs.vercel.app",
+    description: "Personal manga collection and reading platform.",
+    image: "/images/projects/mangamemoirs.jpg",
+  },
+  {
+    name: "KronaFlow",
+    repo: "KronaFlowEmergent",
+    github: "https://github.com/EWilliamHertz/KronaFlowEmergent",
+    vercel: "https://krona-flow-emergent.vercel.app",
+    description: "AI-assisted full-stack development and investment tracking.",
+    image: "/images/projects/kronaflow.jpg",
+  },
+  {
+    name: "Hatake26",
+    repo: "Hatake26",
+    github: "https://github.com/EWilliamHertz/Hatake26",
+    vercel: "https://hatake26.vercel.app",
+    description: "Company landing page and team directory.",
+    image: "/images/projects/hatake26.jpg",
+  },
+  {
+    name: "Cocreatior",
+    repo: "modular",
+    github: "https://github.com/EWilliamHertz/modular",
+    vercel: "https://cocreatior.vercel.app",
+    description: "Modular development workspace.",
+    image: "/images/projects/cocreatior.jpg",
+  },
+  {
+    name: "Queamor",
+    repo: "dating-app",
+    github: "https://github.com/EWilliamHertz/dating-app",
+    vercel: "https://queamor.vercel.app",
+    description: "Dating application with strict type-checked sessions.",
+    image: "/images/projects/queamor.jpg",
+  },
+  {
+    name: "MMORPG",
+    repo: "mmorpg",
+    github: "https://github.com/EWilliamHertz/mmorpg",
+    vercel: "https://mmorpg-five.vercel.app",
+    description: "Browser-based multiplayer game with responsive canvas handling.",
+    image: "/images/projects/mmorpg.jpg",
+  },
+  {
+    name: "HatakeDex",
+    repo: "pokehubz",
+    github: "https://github.com/EWilliamHertz/pokehubz",
+    vercel: "https://hatakedex.vercel.app",
+    description: "Pokemon TCG hub and collection manager.",
+    image: "/images/projects/hatakedex.jpg",
+  }
+  // You can continue adding the rest (Xeotrack, SocioFolio, SyncWatch, MtnDekor, SeedSlingers, Aethelgard) here following the same pattern.
+];
