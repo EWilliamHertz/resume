@@ -2,245 +2,211 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+import { useState, useRef } from 'react';
 
-const SPOTIFY_ALBUM = 'https://open.spotify.com/album/4q8XF0nGRkRkaR1xFTQS4h';
-
-interface Track {
-  id: number;
-  title: string;
-  artist: string;
-  duration: string;
-}
-
-const tracks: Track[] = [
-  // Add your tracks here with MP3 files in /public/music/
-  // Example:
-  // { id: 1, title: "Song Title", artist: "Ernst-William", duration: "3:45" }
-];
-
-export default function Music() {
-  const [currentTrack, setCurrentTrack] = useState<number | null>(null);
+export default function MusicPage() {
+  const [currentTrack, setCurrentTrack] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const togglePlay = (trackId: number) => {
-    if (currentTrack === trackId) {
-      setIsPlaying(!isPlaying);
+  const tracks = [
+    { title: '14 Days (Skara)', file: '/music/14 Days (Skara).mp3' },
+    { title: 'Burritos & Brothels (London)', file: '/music/Burritos & Brothels (London).mp3' },
+    { title: 'Cardboard Crack', file: '/music/Cardboard Crack.mp3' },
+    { title: 'Maximum to Medical (The Ward)', file: '/music/Maximum to Medical (The Ward).mp3' },
+    { title: 'Nine Hours (Acceptance)', file: '/music/Nine Hours (Acceptance).mp3' },
+    { title: 'The Anchor (Gloria)', file: '/music/The Anchor (Gloria).mp3' },
+    { title: 'The Bleed', file: '/music/The Bleed.mp3' },
+    { title: 'The Deep End', file: '/music/The Deep End.mp3' },
+    { title: 'The Exile', file: '/music/The Exile.mp3' },
+  ];
+
+  const togglePlay = () => {
+    if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current?.pause();
+        audioRef.current.pause();
       } else {
-        audioRef.current?.play();
+        audioRef.current.play().catch(err => console.error('Playback failed:', err));
       }
-    } else {
-      setCurrentTrack(trackId);
-      setIsPlaying(true);
+      setIsPlaying(!isPlaying);
     }
   };
 
-  const playNext = () => {
-    if (currentTrack && currentTrack < tracks.length) {
-      setCurrentTrack(currentTrack + 1);
-    }
+  const playTrack = (index: number) => {
+    setCurrentTrack(index);
+    setIsPlaying(true);
+    setTimeout(() => {
+      audioRef.current?.play().catch(err => console.error('Playback failed:', err));
+    }, 0);
   };
 
-  const playPrev = () => {
-    if (currentTrack && currentTrack > 1) {
-      setCurrentTrack(currentTrack - 1);
-    }
+  const nextTrack = () => {
+    const next = (currentTrack + 1) % tracks.length;
+    playTrack(next);
+  };
+
+  const prevTrack = () => {
+    const prev = (currentTrack - 1 + tracks.length) % tracks.length;
+    playTrack(prev);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-950 to-black text-white py-20 px-6">
-      <div className="max-w-5xl mx-auto">
-        {/* Breadcrumb */}
-        <div className="mb-12">
-          <Link href="/" className="text-cyan-400 hover:text-cyan-300 transition">
-            ← Back Home
-          </Link>
-        </div>
-
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white p-4 sm:p-8">
+      <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="mb-16 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            <span className="text-cyan-400">Music</span>
-          </h1>
-          <p className="text-xl text-gray-400">
-            Original tracks and productions by Ernst-William
+        <div className="mb-12">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4">🎵 Music</h1>
+          <p className="text-lg text-slate-400">
+            Explore my musical journey through <em>Memoirs from the Psychward</em>
           </p>
         </div>
 
-        {/* Artist Profile Card */}
-        <div className="bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-lg p-8 mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            {/* Artist Image */}
-            <div className="md:col-span-1 flex justify-center">
-              <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-cyan-400/50 shadow-lg">
-                {/* Add your artist image here or use the uploaded photo (IMG_4546.png) */}
-                <div className="w-full h-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
-                  <span className="text-4xl">🎵</span>
-                </div>
+        {/* Album Info */}
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-8 mb-8 border border-slate-700">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center mb-6">
+            {/* Album Cover */}
+            <div className="flex justify-center">
+              <div className="relative w-64 h-64 rounded-lg overflow-hidden shadow-2xl">
+                <Image
+                  src="/book-cover.jpg"
+                  alt="Memoirs from the Psychward - Album Cover"
+                  fill
+                  className="object-cover"
+                  priority
+                />
               </div>
             </div>
 
-            {/* Artist Info & Spotify */}
-            <div className="md:col-span-2">
-              <h2 className="text-3xl font-bold mb-2">Ernst-William</h2>
-              <p className="text-gray-400 mb-6">
-                Multi-talented creator with a passion for music production, entrepreneurship, and storytelling.
-              </p>
-
-              {/* Spotify Button */}
-              <a
-                href={SPOTIFY_ALBUM}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-black font-bold rounded-full transition mb-6"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.122-.899-.539-.12-.417.107-.799.52-.92 4.561-1.12 8.369-.501 11.461 1.32.42.24.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.26.3-3.239-1.98-8.159-2.58-12.018-1.5-.479.12-1.02-.12-1.14-.6-.12-.479.12-1.02.6-1.14 4.26-1.26 9.541-.68 13.08 1.74.361.22.541.659.301 1.1zm.12-3.36C15.24 9.6 8.82 9.21 5.16 10.56c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.429 11.85-1.02 16.38 2.22.479.301.799.921.6 1.5-.179.56-.661.85-1.26.67z" />
-                </svg>
-                Listen on Spotify
-              </a>
-
-              {/* Streaming Platforms */}
-              <div className="space-y-2">
-                <p className="text-sm text-gray-500">Also available on:</p>
-                <div className="flex flex-wrap gap-3">
-                  <a href="#" className="text-cyan-400 hover:text-cyan-300 transition text-sm">
-                    Apple Music
-                  </a>
-                  <span className="text-gray-700">•</span>
-                  <a href="#" className="text-cyan-400 hover:text-cyan-300 transition text-sm">
-                    YouTube Music
-                  </a>
-                  <span className="text-gray-700">•</span>
-                  <a href="#" className="text-cyan-400 hover:text-cyan-300 transition text-sm">
-                    SoundCloud
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tracks Section */}
-        {tracks.length > 0 ? (
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 text-cyan-400">Latest Tracks</h2>
-
-            <div className="space-y-3">
-              {tracks.map((track) => (
-                <div
-                  key={track.id}
-                  className="flex items-center justify-between p-4 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition group cursor-pointer"
-                  onClick={() => togglePlay(track.id)}
-                >
-                  {/* Track Info */}
-                  <div className="flex items-center gap-4 flex-1">
-                    <button className="p-2 bg-cyan-500 hover:bg-cyan-600 rounded-full transition opacity-0 group-hover:opacity-100">
-                      {currentTrack === track.id && isPlaying ? (
-                        <Pause className="w-4 h-4 text-black" />
-                      ) : (
-                        <Play className="w-4 h-4 text-black" />
-                      )}
-                    </button>
-
-                    <div>
-                      <p className="font-semibold">{track.title}</p>
-                      <p className="text-sm text-gray-400">{track.artist}</p>
-                    </div>
-                  </div>
-
-                  {/* Duration */}
-                  <p className="text-sm text-gray-400">{track.duration}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Hidden Audio Player */}
-            {tracks.length > 0 && currentTrack && (
-              <audio
-                ref={audioRef}
-                src={`/music/track-${currentTrack}.mp3`}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                autoPlay
-              />
-            )}
-
-            {/* Player Controls */}
-            {tracks.length > 0 && currentTrack && (
-              <div className="mt-8 p-4 bg-gray-800 rounded-lg border border-gray-700">
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={playPrev}
-                    disabled={currentTrack === 1}
-                    className="p-2 hover:bg-gray-700 rounded-lg transition disabled:opacity-50"
-                  >
-                    <SkipBack className="w-5 h-5" />
-                  </button>
-
-                  <button
-                    onClick={() => togglePlay(currentTrack)}
-                    className="p-3 bg-cyan-500 hover:bg-cyan-600 rounded-full transition"
-                  >
-                    {isPlaying ? (
-                      <Pause className="w-5 h-5 text-black" />
-                    ) : (
-                      <Play className="w-5 h-5 text-black" />
-                    )}
-                  </button>
-
-                  <button
-                    onClick={playNext}
-                    disabled={currentTrack === tracks.length}
-                    className="p-2 hover:bg-gray-700 rounded-lg transition disabled:opacity-50"
-                  >
-                    <SkipForward className="w-5 h-5" />
-                  </button>
-
-                  <div className="flex-1 mx-4">
-                    <div className="h-1 bg-gray-700 rounded-full"></div>
-                  </div>
-
-                  <Volume2 className="w-5 h-5" />
-                </div>
-
-                <p className="text-center text-sm text-gray-400 mt-2">
-                  Now playing: {tracks.find((t) => t.id === currentTrack)?.title}
+            {/* Album Details */}
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Memoirs from the Psychward</h2>
+              <p className="text-xl text-slate-300 mb-4">by Hatake Hugo</p>
+              
+              <div className="space-y-3 mb-6">
+                <p className="text-slate-400">
+                  <strong>Released:</strong> 2026
+                </p>
+                <p className="text-slate-400">
+                  <strong>Genre:</strong> Alt/Indie
+                </p>
+                <p className="text-slate-400">
+                  <strong>Tracks:</strong> {tracks.length}
                 </p>
               </div>
-            )}
 
-            {tracks.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-400 mb-4">Tracks coming soon...</p>
-                <a
-                  href={SPOTIFY_ALBUM}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-black font-bold rounded-lg transition"
-                >
-                  Listen on Spotify
-                </a>
-              </div>
-            )}
+              {/* Spotify Link */}
+              <Link
+                href="https://open.spotify.com/album/4q8XF0nGRkRkaR1xFTQS4h"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 px-6 py-3 rounded-full font-semibold transition-colors"
+              >
+                🎵 Listen on Spotify
+              </Link>
+            </div>
           </div>
-        ) : null}
+        </div>
 
-        {/* Call to Action */}
-        <div className="mt-16 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Want to Collaborate?</h2>
-          <p className="text-gray-300 mb-6">
-            Interested in working together on music or other projects?
-          </p>
+        {/* Music Player */}
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 border border-slate-700 mb-8">
+          <h3 className="text-xl font-bold mb-6">Now Playing</h3>
+
+          <audio
+            ref={audioRef}
+            src={tracks[currentTrack].file}
+            onEnded={nextTrack}
+          />
+
+          {/* Current Track */}
+          <div className="bg-slate-950 rounded-lg p-4 mb-6">
+            <p className="text-sm text-slate-400 mb-1">Track {currentTrack + 1} of {tracks.length}</p>
+            <p className="text-2xl font-bold truncate">{tracks[currentTrack].title}</p>
+          </div>
+
+          {/* Player Controls */}
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <button
+              onClick={prevTrack}
+              className="p-3 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors"
+              title="Previous"
+            >
+              ⏮️
+            </button>
+
+            <button
+              onClick={togglePlay}
+              className="p-4 rounded-full bg-green-600 hover:bg-green-700 transition-colors"
+              title={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? '⏸️' : '▶️'}
+            </button>
+
+            <button
+              onClick={nextTrack}
+              className="p-3 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors"
+              title="Next"
+            >
+              ⏭️
+            </button>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              defaultValue="0"
+              onChange={(e) => {
+                if (audioRef.current) {
+                  audioRef.current.currentTime = (parseInt(e.target.value) / 100) * (audioRef.current.duration || 0);
+                }
+              }}
+              onInput={(e) => {
+                if (audioRef.current) {
+                  const percent = parseInt(e.currentTarget.value);
+                  e.currentTarget.style.background = `linear-gradient(to right, #16a34a 0%, #16a34a ${percent}%, #475569 ${percent}%, #475569 100%)`;
+                }
+              }}
+              className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #16a34a 0%, #16a34a 0%, #475569 0%, #475569 100%)`
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Tracklist */}
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 border border-slate-700">
+          <h3 className="text-xl font-bold mb-6">Tracklist</h3>
+          <div className="space-y-2">
+            {tracks.map((track, index) => (
+              <button
+                key={index}
+                onClick={() => playTrack(index)}
+                className={`w-full text-left p-3 rounded-lg transition-colors ${
+                  currentTrack === index
+                    ? 'bg-green-600 font-semibold'
+                    : 'bg-slate-700 hover:bg-slate-600'
+                }`}
+              >
+                <span className="text-slate-400 mr-3">{String(index + 1).padStart(2, '0')}</span>
+                {track.title}
+                {currentTrack === index && (
+                  <span className="float-right ml-2">{isPlaying ? '🔊' : '▶️'}</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Back Link */}
+        <div className="mt-12">
           <Link
-            href="/contact"
-            className="inline-block px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-black font-bold rounded-lg transition"
+            href="/"
+            className="text-slate-400 hover:text-white transition-colors"
           >
-            Get in Touch
+            ← Back to Home
           </Link>
         </div>
       </div>
