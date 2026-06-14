@@ -20,15 +20,15 @@ export const projects = [
     repo: "LAGENIO",
     github: "https://github.com/EWilliamHertz/LAGENIO",
     vercel: "https://lagenio.vercel.app",
-    description: "Android 14 to Android 16 compatibility builds.",
+    description: "High quality smart-phones from a company with over a decade of experience of constructing firms for established brands.",
     image: "/images/projects/lagenio.jpg",
   },
   {
-    name: "Manga Memoirs",
+    name: "Ouriye",
     repo: "mangamemoirs",
     github: "https://github.com/EWilliamHertz/mangamemoirs",
     vercel: "https://mangamemoirs.vercel.app",
-    description: "Personal manga collection and reading platform.",
+    description: "AI Manga & Anime generator. Animate prompts and produce anime.",
     image: "/images/projects/mangamemoirs.jpg",
   },
   {
@@ -40,7 +40,7 @@ export const projects = [
     image: "/images/projects/kronaflow.jpg",
   },
   {
-    name: "Hatake26",
+    name: "Hatake.eu",
     repo: "Hatake26",
     github: "https://github.com/EWilliamHertz/Hatake26",
     vercel: "https://hatake26.vercel.app",
@@ -64,20 +64,35 @@ export const projects = [
     image: "/images/projects/queamor.jpg",
   },
   {
-    name: "MMORPG",
-    repo: "mmorpg",
-    github: "https://github.com/EWilliamHertz/mmorpg",
-    vercel: "https://mmorpg-five.vercel.app",
-    description: "Browser-based multiplayer game with responsive canvas handling.",
-    image: "/images/projects/mmorpg.jpg",
-  },
-  {
     name: "HatakeDex",
     repo: "pokehubz",
     github: "https://github.com/EWilliamHertz/pokehubz",
     vercel: "https://hatakedex.vercel.app",
     description: "Pokemon TCG hub and collection manager.",
     image: "/images/projects/hatakedex.jpg",
+  },
+  {
+    name: "XeoTrack",
+    repo: "KronaFlowEmergent",
+    github: "https://github.com/EWilliamHertz/KronaFlowEmergent",
+    vercel: "https://xeotrack.vercel.app",
+    description: "Investment tracking and market analysis platform.",
+    image: "/images/projects/xeotrack.jpg",
+  },
+  {
+    name: "SyncWatch",
+    repo: "syncwatch",
+    github: "https://github.com/EWilliamHertz/syncwatch",
+    vercel: "https://sync-watch-cyan.vercel.app",
+    description: "Real-time synchronization and monitoring tool.",
+    image: "/images/projects/syncwatch.jpg",
+  },
+  {
+    name: "MtnDekor",
+    repo: "mtndekor",
+    github: "https://github.com/EWilliamHertz/mtndekor",
+    vercel: "https://mtndekor-site.vercel.app",
+    description: "Mountain decor and outdoor design showcase.",
+    image: "/images/projects/mtndekor.jpg",
   }
-  // You can continue adding the rest (Xeotrack, SocioFolio, SyncWatch, MtnDekor, SeedSlingers, Aethelgard) here following the same pattern.
 ];
