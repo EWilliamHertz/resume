@@ -40,3 +40,19 @@ model Music {
   coverUrl  String?
   createdAt DateTime @default(now())
 }
+
+model WorkExperience {
+  id               String   @id @default(cuid())
+  title            String
+  company          String
+  shortDescription String   @db.Text
+  content          String   @db.Text
+  images           String[]
+  startDate        DateTime
+  endDate          DateTime?
+  current          Boolean  @default(false)
+  published        Boolean  @default(false)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
