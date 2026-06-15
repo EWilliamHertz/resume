@@ -10,7 +10,10 @@ export async function GET(req: NextRequest) {
 
     const projects = await prisma.project.findMany({
       where: published ? { published: true } : undefined,
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { sortOrder: "asc" }, // Ascending: 0 comes first, then 1, 2, 3...
+        { createdAt: "desc" }
+      ],
     });
 
     return NextResponse.json(projects);
@@ -21,9 +24,17 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { title, description, github, vercel, images, published } = await req.json();
+    const { title, description, github, vercel, images, published, sortOrder } = await req.json();
     const project = await prisma.project.create({
-      data: { title, description, github, vercel, images, published: published || false },
+      data: { 
+        title, 
+        description, 
+        github, 
+        vercel, 
+        images, 
+        published: published || false,
+        sortOrder: parseInt(sortOrder) || 0
+      },
     });
     return NextResponse.json(project, { status: 201 });
   } catch (error) {
@@ -33,7 +44,7 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const { id, title, description, github, vercel, images, published } = await req.json();
+    const { id, title, description, github, vercel, images, published, sortOrder } = await req.json();
     const project = await prisma.project.update({
       where: { id },
       data: {
@@ -43,6 +54,7 @@ export async function PUT(req: NextRequest) {
         vercel,
         ...(images && { images }),
         ...(published !== undefined && { published }),
+        ...(sortOrder !== undefined && { sortOrder: parseInt(sortOrder) || 0 }),
       },
     });
     return NextResponse.json(project);

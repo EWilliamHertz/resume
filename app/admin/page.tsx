@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Loader2, Plus, Trash2, Eye, EyeOff, Edit2, X, Save, Image as ImageIcon, Link as LinkIcon, Briefcase, FileText } from "lucide-react";
+import { Loader2, Plus, Trash2, Eye, EyeOff, Edit2, X, Image as ImageIcon, Link as LinkIcon, Briefcase, FileText } from "lucide-react";
 import RichTextEditor from "@/components/RichTextEditor";
 
 export default function AdminPage() {
@@ -28,57 +28,62 @@ export default function AdminPage() {
   const [projGithub, setProjGithub] = useState("");
   const [projVercel, setProjVercel] = useState("");
   const [projImages, setProjImages] = useState<string[]>([]);
+  const [projOrder, setProjOrder] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
 
   const projectTags = ["Lagenio", "Hatake.eu", "Ouriye", "Manga Memoirs", "KronaFlow", "XeoTrack", "Cocreatior", "HatakeDex", "SyncWatch", "Mtn Dekor"];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [blogRes, projRes] = await Promise.all([
-          fetch(`/api/blog?t=${Date.now()}`),
-          fetch(`/api/project?t=${Date.now()}`)
-        ]);
-        
-        const blogData = await blogRes.json();
-        const projData = await projRes.json();
-        
-        // Safety check to prevent .map() crashes if the DB returns an error object
-        setPosts(Array.isArray(blogData) ? blogData : []);
-        setProjects(Array.isArray(projData) ? projData : []);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    if (authenticated) fetchData();
-  }, [authenticated]);
+    const fetchData = async () => {
+      try {
+        const [blogRes, projRes] = await Promise.all([
+          fetch(`/api/blog?t=${Date.now()}`),
+          fetch(`/api/project?t=${Date.now()}`)
+        ]);
+        const blogData = await blogRes.json();
+        const projData = await projRes.json();
+        setPosts(Array.isArray(blogData) ? blogData : []);
+        setProjects(Array.isArray(projData) ? projData : []);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (authenticated) fetchData();
+  }, [authenticated]);
 
   const handleAuth = () => {
     if (adminKey === process.env.NEXT_PUBLIC_ADMIN_KEY) setAuthenticated(true);
     else alert("Invalid authorization key.");
   };
 
-  // --- Image Upload Logic ---
+  // --- Mass Image Upload Logic ---
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setIsUploading(true);
-    const formData = new FormData();
-    formData.append("image", file);
+    const uploadedUrls: string[] = [];
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.url) setProjImages([...projImages, data.url]);
-      else throw new Error(data.error);
+      // Loop through all selected files and upload them to ImgBB simultaneously
+      await Promise.all(
+        Array.from(files).map(async (file) => {
+          const formData = new FormData();
+          formData.append("image", file);
+          const res = await fetch("/api/upload", { method: "POST", body: formData });
+          const data = await res.json();
+          if (data.url) uploadedUrls.push(data.url);
+          else throw new Error(data.error);
+        })
+      );
+      setProjImages((prev) => [...prev, ...uploadedUrls]);
     } catch (err) {
-      alert("Failed to upload image to ImgBB.");
+      alert("Failed to upload images. Ensure files are valid images.");
     } finally {
       setIsUploading(false);
-      e.target.value = ''; // Reset input
+      e.target.value = ''; // Reset input to allow re-uploading the same file if needed
     }
   };
 
@@ -88,19 +93,19 @@ export default function AdminPage() {
 
   // --- Project CRUD ---
   const resetProjectForm = () => {
-    setProjId(null); setProjTitle(""); setProjDesc(""); setProjGithub(""); setProjVercel(""); setProjImages([]);
+    setProjId(null); setProjTitle(""); setProjDesc(""); setProjGithub(""); setProjVercel(""); setProjImages([]); setProjOrder(0);
   };
 
   const editProject = (p: any) => {
-    setProjId(p.id); setProjTitle(p.title); setProjDesc(p.description); setProjGithub(p.github || ""); setProjVercel(p.vercel || ""); setProjImages(p.images || []);
+    setProjId(p.id); setProjTitle(p.title); setProjDesc(p.description); setProjGithub(p.github || ""); setProjVercel(p.vercel || ""); setProjImages(p.images || []); setProjOrder(p.sortOrder || 0);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const saveProject = async () => {
-    if (!projTitle || !projDesc) return alert("Title and Description required.");
+    if (!projTitle || !projDesc) return alert("Title and Description are required to save.");
     setIsSubmitting(true);
     try {
-      const payload = { id: projId, title: projTitle, description: projDesc, github: projGithub, vercel: projVercel, images: projImages };
+      const payload = { id: projId, title: projTitle, description: projDesc, github: projGithub, vercel: projVercel, images: projImages, sortOrder: projOrder };
       const res = await fetch("/api/project", {
         method: projId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
@@ -110,6 +115,7 @@ export default function AdminPage() {
         const saved = await res.json();
         setProjects(projId ? projects.map(p => p.id === projId ? saved : p) : [saved, ...projects]);
         resetProjectForm();
+        alert("Project saved! Remember to click the Eye icon to publish it.");
       }
     } catch (err) { alert("Failed to save project."); }
     setIsSubmitting(false);
@@ -126,7 +132,7 @@ export default function AdminPage() {
     setProjects(projects.filter(p => p.id !== id));
   };
 
-  // --- Blog CRUD (Simplified from previous iteration) ---
+  // --- Blog CRUD ---
   const resetBlogForm = () => {
     setBlogId(null); setBlogTitle(""); setBlogContent(""); setBlogProject(""); setBlogDate("");
   };
@@ -247,7 +253,13 @@ export default function AdminPage() {
                 {projId && <button onClick={resetProjectForm} className="text-neutral-500 hover:text-white text-sm"><X size={16} /></button>}
               </div>
               <div className="space-y-4">
-                <input type="text" value={projTitle} onChange={e => setProjTitle(e.target.value)} placeholder="Project Name (e.g. Hatake.social)" className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white focus:outline-none focus:border-cyan-500" />
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <input type="text" value={projTitle} onChange={e => setProjTitle(e.target.value)} placeholder="Project Name (e.g. Hatake.social)" className="col-span-1 md:col-span-3 px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white focus:outline-none focus:border-cyan-500" />
+                  <div className="relative">
+                    <label className="absolute -top-2 left-3 bg-neutral-900/50 px-1 text-xs text-neutral-500">Order (Lower = First)</label>
+                    <input type="number" value={projOrder} onChange={e => setProjOrder(Number(e.target.value))} className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white focus:outline-none focus:border-cyan-500" />
+                  </div>
+                </div>
                 
                 <textarea value={projDesc} onChange={e => setProjDesc(e.target.value)} placeholder="Short Description..." className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white focus:outline-none focus:border-cyan-500 h-24 resize-none" />
                 
@@ -268,7 +280,8 @@ export default function AdminPage() {
                       <span className="text-sm font-medium text-neutral-400 flex items-center gap-2"><ImageIcon size={16}/> Project Images</span>
                       <label className="cursor-pointer bg-cyan-500/10 text-cyan-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 transition-colors">
                         {isUploading ? <Loader2 className="animate-spin inline mr-2" size={16}/> : "Upload via ImgBB"}
-                        <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={isUploading} />
+                        {/* Added "multiple" to allow highlighting multiple files */}
+                        <input type="file" accept="image/*" multiple onChange={handleImageUpload} className="hidden" disabled={isUploading} />
                       </label>
                    </div>
                    {projImages.length > 0 && (
@@ -287,8 +300,11 @@ export default function AdminPage() {
               </div>
             </div>
 
+            {/* List */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {projects.map(p => (
+              {projects
+                .sort((a, b) => a.sortOrder - b.sortOrder)
+                .map(p => (
                 <div key={p.id} className="bg-neutral-900/40 border border-neutral-800/50 rounded-xl overflow-hidden flex flex-col">
                   {p.images.length > 0 ? (
                     <div className="h-32 w-full bg-neutral-900 overflow-hidden">
@@ -301,6 +317,7 @@ export default function AdminPage() {
                     <h3 className="font-bold text-white mb-1 flex items-center gap-2">
                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${p.published ? 'bg-green-500' : 'bg-neutral-600'}`}></span>
                        {p.title}
+                       <span className="ml-auto text-xs font-mono bg-neutral-800 text-neutral-500 px-2 py-0.5 rounded">Ord: {p.sortOrder}</span>
                     </h3>
                     <p className="text-xs text-neutral-500 mb-4 line-clamp-2">{p.description}</p>
                     <div className="mt-auto flex justify-end gap-2 pt-4 border-t border-neutral-800/50">
