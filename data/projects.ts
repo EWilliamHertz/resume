@@ -44,8 +44,8 @@ export const projects = [
     repo: "Hatake26",
     github: "https://github.com/EWilliamHertz/Hatake26",
     vercel: "https://hatake26.vercel.app",
-    description: "Company landing page and team directory.",
-    image: "/images/projects/hatake26.png",
+    description: "E-commerce platform with featured products and merchandise.",
+    image: "/projects/hatake-eu.png",
   },
   {
     name: "Cocreatior",
@@ -92,7 +92,7 @@ export const projects = [
     repo: "mtndekor",
     github: "https://github.com/EWilliamHertz/mtndekor",
     vercel: "https://mtndekor-site.vercel.app",
-    description: "Mountain decor and outdoor design showcase.",
-    image: "/images/projects/mtndekor.png",
+    description: "Portfolio of completed renovation and design projects.",
+    image: "/projects/mtndekor.png",
   }
 ];

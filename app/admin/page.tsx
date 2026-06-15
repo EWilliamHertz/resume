@@ -53,9 +53,19 @@ export default function AdminPage() {
     if (authenticated) fetchData();
   }, [authenticated]);
 
-  const handleAuth = () => {
-    if (adminKey === process.env.NEXT_PUBLIC_ADMIN_KEY) setAuthenticated(true);
-    else alert("Invalid authorization key.");
+  const handleAuth = async () => {
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminKey })
+      });
+      const data = await res.json();
+      setAuthenticated(data.authenticated);
+      if (!data.authenticated) alert('Invalid admin key');
+    } catch (error) {
+      alert('Authentication failed');
+    }
   };
 
   // --- Mass Image Upload Logic ---

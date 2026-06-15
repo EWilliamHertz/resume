@@ -6,14 +6,15 @@ import { ArrowLeft } from "lucide-react";
 const prisma = new PrismaClient();
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const resolvedParams = await params;
   const post = await prisma.blogPost.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
   });
 
   if (!post || !post.published) {

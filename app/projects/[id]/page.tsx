@@ -6,14 +6,15 @@ import { ArrowLeft, Github, Globe } from "lucide-react";
 const prisma = new PrismaClient();
 
 interface ProjectPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
+  const resolvedParams = await params;
   const project = await prisma.project.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
   });
 
   if (!project || !project.published) {
