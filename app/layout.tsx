@@ -6,12 +6,16 @@ import MusicPlayer from "@/components/MusicPlayer";
 
 const inter = Inter({ subsets: ["latin"] });
 
+import type { Viewport } from "next";
+
 export const metadata: Metadata = {
   title: "Ernst-William Hertz | Portfolio",
-  description: "Full-Stack Developer, Author, and Musician.",
-  themeColor: "#000000",
+  description: "Full-Stack Developer, Author, and Entrepreneur.",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
 // Global song playlist. You can easily re-order these array objects 
 // to match the exact order from your picture.
 const globalSongs = [

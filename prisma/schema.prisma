@@ -20,11 +20,23 @@ model BlogPost {
   @@index([project])
 }
 
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  github      String?
+  vercel      String?
+  images      String[] // Array of ImgBB URLs
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Music {
-  id    String @id @default(cuid())
-  title String
-  artist String
-  url   String
-  coverUrl String?
+  id        String   @id @default(cuid())
+  title     String
+  artist    String
+  url       String
+  coverUrl  String?
   createdAt DateTime @default(now())
 }
