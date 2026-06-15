@@ -10,15 +10,15 @@ export default function MusicPage() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const tracks = [
-    { title: '14 Days (Skara)', file: '/music/14 Days (Skara).mp3' },
-    { title: 'Burritos & Brothels (London)', file: '/music/Burritos & Brothels (London).mp3' },
     { title: 'Cardboard Crack', file: '/music/Cardboard Crack.mp3' },
-    { title: 'Maximum to Medical (The Ward)', file: '/music/Maximum to Medical (The Ward).mp3' },
-    { title: 'Nine Hours (Acceptance)', file: '/music/Nine Hours (Acceptance).mp3' },
     { title: 'The Anchor (Gloria)', file: '/music/The Anchor (Gloria).mp3' },
-    { title: 'The Bleed', file: '/music/The Bleed.mp3' },
     { title: 'The Deep End', file: '/music/The Deep End.mp3' },
     { title: 'The Exile', file: '/music/The Exile.mp3' },
+    { title: 'The Bleed', file: '/music/The Bleed.mp3' },
+    { title: 'Burritos & Brothels (London)', file: '/music/Burritos & Brothels (London).mp3' },
+    { title: '14 Days (Skara)', file: '/music/14 Days (Skara).mp3' },
+    { title: 'Maximum to Medical (The Ward)', file: '/music/Maximum to Medical (The Ward).mp3' },
+    { title: 'Nine Hours (Acceptance)', file: '/music/Nine Hours (Acceptance).mp3' },
   ];
 
   const togglePlay = () => {
@@ -87,7 +87,7 @@ export default function MusicPage() {
                   <strong>Released:</strong> 2026
                 </p>
                 <p className="text-slate-400">
-                  <strong>Genre:</strong> Alt/Indie
+                  <strong>Genre:</strong> HipHop/Rap
                 </p>
                 <p className="text-slate-400">
                   <strong>Tracks:</strong> {tracks.length}

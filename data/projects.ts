@@ -45,7 +45,7 @@ export const projects = [
     github: "https://github.com/EWilliamHertz/Hatake26",
     vercel: "https://hatake26.vercel.app",
     description: "Company landing page and team directory.",
-    image: "/images/projects/hatake26.jpg",
+    image: "/images/projects/hatake26.png",
   },
   {
     name: "Cocreatior",
@@ -93,6 +93,6 @@ export const projects = [
     github: "https://github.com/EWilliamHertz/mtndekor",
     vercel: "https://mtndekor-site.vercel.app",
     description: "Mountain decor and outdoor design showcase.",
-    image: "/images/projects/mtndekor.jpg",
+    image: "/images/projects/mtndekor.png",
   }
 ];

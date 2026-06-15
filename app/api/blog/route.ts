@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const { id, title, content, project, published } = await req.json();
+    const { id, title, content, project, published, createdAt } = await req.json();
 
     if (!id) {
       return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
@@ -61,6 +61,7 @@ export async function PUT(req: NextRequest) {
         ...(content && { content }),
         ...(project !== undefined && { project }),
         ...(published !== undefined && { published }),
+        ...(createdAt && { createdAt: new Date(createdAt) }),
       },
     });
 
